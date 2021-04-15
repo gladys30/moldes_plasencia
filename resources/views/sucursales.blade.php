@@ -33,8 +33,20 @@
                 </div>
                 </div>  
                 </div>
+ 
+                </div>               
 
-                <div class="col">
+      </div>
+
+
+      <div class="col">
+
+
+        <div class="row">
+
+
+
+        <div class="col">
                  <div class="card border-dark mb-3" style="width: 100%;">
                 <img src="sucursalSanMarcos.png" class="card-img-top" alt="Sucursal San Marcos" style=" height:10rem; -webkit-filter: brightness(50%);filter: brightness(50%);">
                 <div class="card-body">
@@ -43,20 +55,8 @@
                 <button type="submit"  class="btn-info" style="width:100%;" >Sucursal <br>  San Marcos</button> 
                 </form> 
                 </div>
-                </div>  
-                </div>               
-
-      </div>
-
-
-
-
-
-        <div class="row">
-
-
-
-                
+                </div> 
+                </div> 
 
                     
 
@@ -80,9 +80,8 @@
 
     </div>
 
+    </div>
 
-
-</div>
 
 
 
