@@ -23,8 +23,12 @@ Route::get('/moldesprincipal', function () {
     $titulo = "SUCURSALES PLASENCIA";
     return view('moldesprincipal')->with('titulo',$titulo);
 });
-
-
+///////////
+Route::get('/sucursales', function () {
+    $titulo = "SUCURSALES";
+    return view('sucursales')->with('titulo',$titulo);
+});
+/////////
 ///////////////////      EL PARAISO    //////////////////////////
 
 // MOLDE

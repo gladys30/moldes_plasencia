@@ -40,7 +40,7 @@
             
             
             <li><a class="nav-link" id="usuarios" href="/usuarios">Usuarios</a></li>
-            <li><a class="nav-link" id="InvetarioF" href="/invetarioF">Invetario Fijo </a></li>
+            <li><a class="nav-link" id="InvetarioF" href="/sucursales">Inventario Fijo </a></li>
             
             <li><a href=""></a></li>
             <li><a href=""></a></li>
