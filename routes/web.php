@@ -23,19 +23,28 @@ Route::get('/moldesprincipal', function () {
     $titulo = "SUCURSALES PLASENCIA";
     return view('moldesprincipal')->with('titulo',$titulo);
 });
-///////////
+
 Route::get('/sucursales', function () {
     $titulo = "SUCURSALES";
     return view('sucursales')->with('titulo',$titulo);
 });
+
+
+
 /////////
 ///////////////////      EL PARAISO    //////////////////////////
+
+// INVENTARIO FIJO
+Route::get('/inventario_sucursalParaiso/{id}',[App\Http\Controllers\mobiliarioController::class, 'index' ])->name('id_planta_inventario');
+Route::post('/inventario_sucursalParaiso/{id}',[App\Http\Controllers\mobiliarioController::class, 'index' ])->name('datos_planta');
+Route::post('/inventario_sucursalParaiso/{id}',[App\Http\Controllers\mobiliarioController::class, 'index' ])->name('id_plantass');
 
 // MOLDE
 Route::get('/sucursal_elparaiso/{id}',[App\Http\Controllers\MoldesController::class, 'index' ])->name('datos_planta');
 Route::post('/sucursal_elparaiso/{id}',[App\Http\Controllers\MoldesController::class, 'index' ])->name('id_planta');
 Route::post('/sucursal_elparaiso/update/{id}',[App\Http\Controllers\MoldesController::class, 'update' ])->name('actualizar_moldes');
 Route::post('/sucursal_elparaiso/crear/{id}',[App\Http\Controllers\MoldesController::class, 'store' ])->name('insertar_moldes');
+
 
 // VITOLA
 Route::post('/agregar_vitola/{id}',[App\Http\Controllers\VitolaController::class, 'store' ])->name('insertar_vitola');
@@ -44,8 +53,21 @@ Route::get('/crear_molde/{id}',[App\Http\Controllers\MoldesController::class, 's
 //FIGURA
 Route::post('/agregar_figura/{id}',[App\Http\Controllers\FiguraTipoController::class, 'store' ])->name('insertar_figura');
 
+//DEPARTAMENTO
+Route::post('/agregar_depto/{id}',[App\Http\Controllers\DeptoController::class, 'store' ])->name('insertar_depto');
+
+//AREA
+Route::post('/agregar_area/{id}',[App\Http\Controllers\areaController::class, 'store' ])->name('insertar_area');
+
+//MOBILIARIO
+Route::post('/inventario_sucursalParaiso/crear/{id}',[App\Http\Controllers\mobiliarioController::class, 'store' ])->name('insertar_mobiliario');
+//Route::get('/inventario_sucursalParaiso/crear/{id}',[App\Http\Controllers\mobiliarioController::class, 'store' ]);
+Route::post('/inventario_sucursalParaiso/update/{id}',[App\Http\Controllers\mobiliarioController::class, 'update' ])->name('actualizar_mobiliario');
+
+
 //PDF
 Route::post('/imprimirtablaparaiso/{id}',[App\Http\Controllers\MoldesController::class, 'imprimirdatosparaiso' ])->name('imprimirdatosparaiso');
+//Route::post('/imprimirtablainventarioparaiso/{id}',[App\Http\Controllers\MoldesController::class, 'imprimirdatosparaiso' ])->name('imprimirdatosparaiso');
 //  REMISIONES
 
 Route::post('/buscar_remision/{id}',[App\Http\Controllers\MoldesController::class, 'buscar_remision' ])->name('buscar_remision');
@@ -164,5 +186,13 @@ Route::get('/ayuda', function () {
     $titulo= "Ayuda";
     return view('ayuda')->with('titulo',$titulo);
 });
+
+
+
+//------ruta para generar codigo QR------
+Route::get('/inventario_sucursalParaiso/in/qr-code', function () {
+    return QrCode::size(150)->generate('generar');
+});
+
 
 Auth::routes();

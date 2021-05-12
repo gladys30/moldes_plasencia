@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Vitola;
 use Illuminate\Http\Request;
 
-class VitolaController extends Controller
+class DeptoController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,8 +14,8 @@ class VitolaController extends Controller
      */
     public function index()
     {
-        $vitola = \DD::select('call mostrar_vitolas(1)');
-        return view('sucursal_elparaiso')->with('vitola',  $vitola);
+        $depto = \DD::select('call mostrar_depto(1)');
+        return view('inventario_sucursalParaiso')->with('departamento',  $depto);
     }
 
     /**
@@ -50,24 +50,26 @@ class VitolaController extends Controller
    
  
    
-    
     public function store(Request $request)
-    { 
-        $molde = \DB::select('call insertar_vitola(:id_planta,:vitola)',
-        [ 'vitola' =>  (string)$request->vitola,
-        'id_planta' => (int)$request->id_planta]);
+
+    {
+        //return $request; verifica las variables que se envian al formulario
+        $depto = \DB::select('call insertar_depto(:id_planta,:nombre_depto)',
+        ['id_planta' => (int)$request->id_planta, 
+        'nombre_depto' =>  (string)$request->departamento]);
 
         
-        $moldes = \DB::select('call mostrar_datos_moldes(?)', [$request->id]);
+        //$moldes = \DB::select('call mostrar_datos_moldes(?)', [$request->id]);
                             
-        $vitolas = \DB::select('call mostrar_vitolas(?)', [$request->id]);
+        $depto = \DB::select('call mostrar_depto(?)', [$request->id]);
 
-        $figuras = \DB::select('call mostrar_figura_tipos(?)', [$request->id]);
+        //$figuras = \DB::select('call mostrar_figura_tipos(?)', [$request->id]);
 
 
-        return REDIRECT('sucursal_elparaiso/1')->with('moldes', $moldes)->with('vitolas', $vitolas)->with( 'figuras',$figuras)
-        ->with('id_planta', $request->id) ->with('error', $molde);
+        return REDIRECT('inventario_sucursalParaiso/1')->with('nombre_depto', $depto);
     }
+    
+    
 
     /**
      * Display the specified resource.

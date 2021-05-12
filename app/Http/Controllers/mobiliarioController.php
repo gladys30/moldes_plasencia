@@ -10,9 +10,11 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 use PDF;
 use Carbon\Carbon;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 
-class MoldesController extends Controller
+
+class mobiliarioController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,27 +22,59 @@ class MoldesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index( Request $request)
-    {
-       
-        $titulo = "INVENTARIO DE MOLDES SUCURSAL EL PARAÍSO";
-        $vitolaB = $request->vitolabuscar;
-        $figuraB = $request->figurabuscar;
+    {   
+        //return $request;
         
-        $moldes = \DB::select('call moldes_paraiso(:vitola,:nombre_figura)',
-        [ 'vitola' => (string)$request->vitolabuscar,
-          'nombre_figura' => (string)$request->figurabuscar]);
+      $titulo = "INVENTARIO FIJO DE LA SUCURSAL EL PARAÍSO";
+      
+      $deptoB = $request->deptobuscar;
+      $areaB = $request->areabuscar;
+      
+      $mobil = \DB::select('call mobiliario_paraiso(:nombre_depto,:nombre_area)',
+      [ 'nombre_depto' => (string)$request->deptobuscar,
+        'nombre_area' => (string)$request->areabuscar]);
 
-        $vitolas = \DB::select('call mostrar_vitolas(?)', [$request->id]);
+        //$mobil = \DB::select('call mostrar_mobiliario(?)', [$request->id]); 
+        $depto = \DB::select('call mostrar_depto(?)', [$request->id]);
 
-        $figuras = \DB::select('call mostrar_figura_tipos(?)', [$request->id]);
+        $area = \DB::select('call mostrar_area(?)', [$request->id]);
 
         $id_planta = [$request->id];
 
-        return view('sucursal_elparaiso')->with('moldes',$moldes)->with('vitolas', $vitolas)->with( 'figuras',$figuras)
-        ->with('id_planta', $id_planta)->with('titulo',$titulo)->with('vitolaB',$vitolaB)->with('figuraB',$figuraB);
+        return view('inventario_sucursalParaiso')->with('titulo',$titulo)->with('mobiliario',$mobil)->with('depto',$depto)->with('area',$area)
+        ->with('deptoB',$deptoB)->with('areaB',$areaB);
+    
+
     }
 
     
+    public function store(Request $request)
+    {
+   // return $request;
+
+        $mobi = \DB::select('call insertar_mobiliario(:id_planta,:id_depto,:id_area,:nombre_mobiliario,:cant_mobiliario,:descripcion_mobiliario)',
+                    [ 'id_planta' => (int)$request->id_planta,
+                    'id_depto' =>  \DB::select('call traer_id_depto(?,?)', [$request->id_planta,$request->id_depto])[0]->id_depto,
+                    'id_area' => \DB::select('call traer_id_area(?,?)', [$request->id_planta,$request->id_area])[0]->id_area,
+                    'nombre_mobiliario' => (string)$request->mobi,
+                    'cant_mobiliario' => (int)$request->cant,
+                    'descripcion_mobiliario' => (string)$request->descrip
+                    ]);
+
+                   $mobi = \DB::select('call mostrar_mobiliario(?)', [$request->id]);
+                            
+                    $depto = \DB::select('call mostrar_depto(?)', [$request->id]);
+
+                    $area = \DB::select('call mostrar_area(?)', [$request->id]);
+
+
+                    return REDIRECT('inventario_sucursalParaiso/1')->with('mobiliario', $mobi)->with('depto', $depto)->with( 'area',$area)->with('id_planta', $request->id);
+
+ 
+
+    }
+
+
 
     public function remisiones( Request $request)
     {
@@ -245,36 +279,7 @@ return view('remisionesparaiso')
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        $molde = \DB::select('call insertar_moldes(:id_planta,:id_vitola,:id_figura,:bueno,:irregular,:malo,:bodega,:reparacion,:salon,:fivi)',
-                    [ 'id_planta' => (int)$request->id_planta,
-                    'id_vitola' =>  \DB::select('call traer_id_vitola(?,?)', [$request->id_planta,$request->id_vitola])[0]->id_vitola,
-                    'id_figura' => \DB::select('call traer_id_figura(?,?)', [$request->id_planta,$request->id_figura])[0]->id_figura,
-                    'bueno' => (int)$request->bueno,
-                    'irregular' => (int)$request->irregulares,
-                    'malo' => (int)$request->malos,
-                    'reparacion' => (int)$request->reparacion,
-                    'bodega' => (int)$request->bodega,
-                    'salon' => (int)$request->salon,
-                    'fivi' => (string)$request->fivi
-                    
-                    ]);
-
-                
-                    $moldes = \DB::select('call mostrar_datos_moldes(?)', [$request->id]);
-                            
-                    $vitolas = \DB::select('call mostrar_vitolas(?)', [$request->id]);
-
-                    $figuras = \DB::select('call mostrar_figura_tipos(?)', [$request->id]);
-
-
-                    return REDIRECT('sucursal_elparaiso/1')->with('moldes', $moldes)->with('vitolas', $vitolas)->with( 'figuras',$figuras)
-                    ->with('id_planta', $request->id);
-
- 
-
-    }
+    
 
 
 
@@ -359,9 +364,9 @@ return view('remisionesparaiso')
     public static function edit($id)
     {
         
-        $fila_moldes = \DB::select('call mostrar_datos_actualizar(?)',[$id]);
+        $fila_mobiliario = \DB::select('call mostrar_datos_actualizar(?)',[$id]);
 
-        return response()->json( $fila_moldes);
+        return response()->json( $fila_mobiliario);
 
 
     }
@@ -376,30 +381,25 @@ return view('remisionesparaiso')
     public function update(Request $request, $id)
     {
 
-        
-        $molde = \DB::select('call actualizar_moldes(:id_molde, :bueno,:irregular,:malo,:bodega,:reparacion,:salon)',
+       // return $request;
+
+        $mobiliario = \DB::select('call actualizar_mobiliario(:nombre_mobiliario,:cant_mobiliario,:descripcion_mobiliario, :id_mobiliario)',
                     [
-                        'id_molde' => (int)$request->id_molde,
-                        'bueno' => (int)$request->mo_bueno,
-                        'irregular' => (int)$request->mo_irregular,
-                        'malo' => (int)$request->mo_malo,
-                        'reparacion' => (int)$request->mo_reparacion,
-                        'bodega' => (int)$request->mo_bodega
-                        ,'salon' => (int)$request->mo_salon
+                        
+                        'nombre_mobiliario' => (string)$request->mo_mobil,
+                        'cant_mobiliario' => (int)$request->mo_cant,
+                        'descripcion_mobiliario' => (string)$request->mo_descrip, 
+                        'id_mobiliario' => (int)$request->id_mobiliario
                      ]);
 
             
-                      
-
-                    $moldes = \DB::select('call mostrar_datos_moldes(?)', [$request->id]);
+                     $mobiliario = \DB::select('call mostrar_mobiliario(?)', [$request->id]);
                             
-                    $vitolas = \DB::select('call mostrar_vitolas(?)', [$request->id]);
+                     $depto = \DB::select('call mostrar_depto(?)', [$request->id]);
+ 
+                     $area = \DB::select('call mostrar_area(?)', [$request->id]);
 
-                    $figuras = \DB::select('call mostrar_figura_tipos(?)', [$request->id]);
-
-
-                    return REDIRECT('sucursal_elparaiso/1')->with('moldes', $moldes)->with('vitolas', $vitolas)->with( 'figuras',$figuras)
-                    ->with('id_planta', $request->id);
+                    return REDIRECT('inventario_sucursalParaiso/1')->with('mobiliario', $mobiliario)->with('depto', $depto)->with( 'area',$area)->with('id_planta', $request->id);
 
  
         
@@ -436,6 +436,29 @@ return view('remisionesparaiso')
     
 
     }
+
+
+
+
+    
+ 
+
+   public function qr_qenerate()
+    {
+
+       return QrCode::generate('Make me into a QrCode!', '../public/qrcodes/qrcode.svg');
+
+
+        //QrCode::format('svg')->size(700)->color(255,0,0)->generate('Desarrollo libre Andres', '../public/qrcodes/qrcode.svg');
+ 
+   //     QrCode::format('png')->size(700)->color(255, 0, 0)->merge('https://www.desarrollolibre.net/assets/img/logo.png', .3, true)->generate('Desarrollo libre Andres', '../public/qrcodes/qrcode.png');
+    }
+
+
+
+
+
+
 
 
 
