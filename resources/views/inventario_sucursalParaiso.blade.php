@@ -12,7 +12,7 @@
   </button>
 
   <button type="button" class=" btn-info float-right"   data-toggle="modal" data-target="#modal_agregar_area"  style="margin-right: 10px; margin-bottom: 10px;">
-      <span> + Area</span>
+      <span> + Área</span>
   </button>
 
 <button type="button" class=" btn-info float-right"   data-toggle="modal" data-target="#modal_agregar_depto"  style="margin-right: 10px; margin-bottom: 10px;">
@@ -75,12 +75,12 @@
   <div class="modal-dialog modal-dialog-centered" >
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="staticBackdropLabel">Agregar Area</h5>
+        <h5 class="modal-title" id="staticBackdropLabel">Agregar Área</h5>
         <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
       <div class="mb-3 col">            
-      <label for="txt_departamento" class="form-label">Area</label>
+      <label for="txt_departamento" class="form-label">Área</label>
       <input class="form-control" id="area" type="text" name="area" placeholder="Agregar Area" maxLength="30">  
       </div>
       </div>
